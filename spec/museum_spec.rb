@@ -15,6 +15,7 @@ RSpec.describe Museum do
         patron_1.add_interest("Dead Sea Scrolls")
         patron_1.add_interest("Gems and Minerals")
         patron_2.add_interest("IMAX")
+        patron_2.add_interest("Dead Sea Scrolls")
         patron_3.add_interest("Dead Sea Scrolls")
     end
 
@@ -26,6 +27,7 @@ RSpec.describe Museum do
         it 'has attributes' do
             expect(dmns.name).to eq("Denver Museum of Nature and Science")
             expect(dmns.exhibits).to eq([])
+            expect(dmns.patrons_by_exhibit_interest).to eq({})
         end
     end
 
@@ -59,6 +61,35 @@ RSpec.describe Museum do
             dmns.admit(patron_3)
 
             expect(dmns.patrons).to eq([patron_1,patron_2, patron_3])
+        end
+    end
+
+    describe '#can_be_added_even_if_they_dont_have enough money' do
+        it ' can be added even if they dont have enough money' do
+            dmns.admit(patron_1)
+            dmns.admit(patron_2)
+            dmns.admit(patron_3)
+
+            expected_hash = {
+                'Gems and Minerals' => [patron_1],
+                'Dead Sea Scrolls' => [patron_1, patron_2, patron_3]
+                'IMAX' => []
+            }
+            expect(dmns.patrons_by_exhibit_interest).to eq(expected_hash)
+        end
+    end
+
+    describe '#announce_lottery_winner' do
+        it 'annouce the lottery winner for each exhibition' do
+            dmns.admit(patron_1)
+            dmns.admit(patron_2)
+            dmns.admit(patron_3)
+
+            expect(dmns.ticket_lottery_contestants(dead_sea_scrolls)).to eq ([patron_1,patron_2])
+            expect(dmns.draw_lottery_winner(dead_sea_scrolls)).to eq("Johnny")
+            expect(dmns.draw_lottery_winner(gems_and_minerals)).to eq(nil)
+            expect(dmns.announce_lottery_winner(imax)).to eq("Bob")
+            expect(dmns.announce_lottery_winner(gems_and_minerals)).to eq("No winners for this lottery")
         end
     end
 end
