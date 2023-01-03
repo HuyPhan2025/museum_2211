@@ -18,4 +18,15 @@ RSpec.describe Patron do
             expect(patron_1.interests).to eq([])
         end
     end
+
+    describe '#add_interest' do
+        it 'adds to the interest array' do
+            patron_1 = Patron.new("Bob", 20)
+
+            patron_1.add_interest("Dead Sea Scrolls")
+            patron_1.add_interest("Gems and Minerals")
+
+            expect(patron_1.interests).to eq(["Dead Sea Scrolls", "Gems and Minerals"])
+        end
+    end
 end
