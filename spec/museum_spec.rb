@@ -9,11 +9,13 @@ RSpec.describe Museum do
     let(:imax) { Exhibit.new({name: "IMAX",cost: 15}) }
     let(:patron_1) { Patron.new("Bob", 20) }
     let(:patron_2) { Patron.new("Sally", 20) }
+    let(:patron_3) { Patron.new("Johnny", 5) }
 
     before do
         patron_1.add_interest("Dead Sea Scrolls")
         patron_1.add_interest("Gems and Minerals")
         patron_2.add_interest("IMAX")
+        patron_3.add_interest("Dead Sea Scrolls")
     end
 
     describe '#initialize' do
@@ -41,6 +43,22 @@ RSpec.describe Museum do
         it 'recommend exhibit to patrons' do
             expect(dmns.recommend_exhibits(patron_1)).to eq(["Dead Sea Scrolls", "Gems and Minerals" ])
             expect(dmns.recommend_exhibits(patron_2)).to eq(["IMAX"])
+        end
+    end
+
+    describe '#can_have_patrons' do
+        it 'can have patrons' do
+            expect(dmns.patrons).to eq([])
+        end
+    end
+
+    describe '#can_admit_patrons' do
+        it 'can add patrons to patrons array' do
+            dmns.admit(patron_1)
+            dmns.admit(patron_2)
+            dmns.admit(patron_3)
+
+            expect(dmns.patrons).to eq([patron_1,patron_2, patron_3])
         end
     end
 end
